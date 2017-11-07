@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
   // MPI variables
   MPI_Comm comm;
   MPI_Status status;
-  int size, rank, master_process = 0, next, prev;
+  int size, rank, root = 0, next, prev;
   
   // Other variables
   char *file_name;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   
   // Check if number of processes is correct
   if (P != size) {
-    if (rank == master_process) {
+    if (rank == root) {
       printf("ERROR: P = %d, size = %d.\n", P, size);
     }
     MPI_Finalize();
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
   }
   
   // With master process, read the image data into master buffer
-  if (rank == master_process) {
+  if (rank == root) {
     printf("Processing %d x %d image on %d processes\n", M, N, P);
     
     printf("Reading <%s>\n", file_name);
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
   // Split the master buffer data up amongst processes
   MPI_Scatter(master_buffer, MP*NP, MPI_FLOAT, 
               buffer, MP*NP, MPI_FLOAT, 
-              master_process, comm);
+              root, comm);
   
   // Copy buffer data into edge adding a 1 pixel padding
   for (i=1; i<=MP; ++i) {
@@ -144,10 +144,10 @@ int main(int argc, char *argv[]) {
   // Gather all the data from the buffers back to master buffer
   MPI_Gather(buffer, MP*NP, MPI_FLOAT, 
              master_buffer, MP*NP, MPI_FLOAT, 
-             master_process, comm);
+             root, comm);
   
   // With master process, write the result image
-  if (rank == master_process) {
+  if (rank == root) {
     printf("Finished with %d iterations\n", iter);
     
     file_name="result192x128.pgm";

@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
     }
   }
   
+  // Main loop
   for (iter=0; iter<NUM_ITER; ++iter) {
     // Calculate the new value
     for (i=1; i<=M; ++i) {
