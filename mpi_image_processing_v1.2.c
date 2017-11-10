@@ -3,7 +3,7 @@
 #include <math.h>
 #include <mpi.h>
 
-#include "pgmio.h"
+#include "pgmio/pgmio.h"
 
 #define P 4
 

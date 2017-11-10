@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "pgmio.h"
+#include "pgmio/pgmio.h"
 
 #define NUM_ITER 100
 
